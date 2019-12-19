@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="screen-orientation" content="portrait">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
+    <title>年会抽奖小程序</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+    <link rel="stylesheet" type="text/css" href="css/wall.css">
+    <style type="text/css">
+        body, html {
+            width: 100%;
+            height: 100%;
+        }
+        .result {
+			position: absolute;
+            height: 80%;
+			width: 70%;
+			top: 50%;
+			left: 50%;
+			margin-top: -260px;
+			/* transform: translateY(-50%); */
+			transform: translateX(-50%);
+            text-align: center;
+            padding: 10px;
+            padding-top: 0;
+			display: none;
+			z-index: 1;
+			overflow: auto;
+            /* background-color: #fff; */
+        }
+		.result::-webkit-scrollbar {
+    		display: none;
+		}
+        .result_type {
+            font-size: 35px;
+            color: #fff;
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+        .result_name span {
+            display: inline-block;
+			font-size: 20px;
+			font-weight: 800;
+            width: 120px;
+            line-height: 20px;
+            color: #fff;
+            margin: 5px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+			padding: 10px 0;
+			background-color: red;
+		}
+		.prize_tips {
+			position: absolute;
+			left: 60px;
+			top: 50%;
+			transform: translateY(-50%);
+			text-align: center;
+		}
+		.prize_tips_button {
+			display: block;
+			/* color: #fff;
+			padding: 6px 4px;
+			background-color: red; */
+			box-sizing: border-box;
+			width: 140px;
+			margin-top: 10px;
+			font-family: inherit;
+            font-size: 100%;
+            padding: 10px 4px;
+            color: rgba(0,0,0,.8);
+            border: 0 rgba(0,0,0,0);
+            background-color: #E6E6E6;
+            text-decoration: none;
+			border-radius: 2px;
+		}
+		.prize_tips_button:focus {
+			background-color: red;
+		}
+		.prize_tips_input {
+			display: inline-block;
+			width: 140px;
+			margin-top: 10px;
+			font-size: 100%;
+            padding: 10px 4px;
+		}
+		.prize_tips .prize_tips_header {
+			display: block;
+			font-size: 25px;
+			color: #fff;
+			padding: 6px 4px;
+			background-color: red;
+		}
+		.selected_type {
+			position: absolute;
+			right: 60px;
+			top: 50%;
+			transform: translateY(-50%);
+			text-align: center;
+		}
+		.selected_type .selected_type_header {
+			display: block;
+			font-size: 25px;
+			color: #fff;
+			padding: 6px 4px;
+			background-color: red;
+		}
+		.selected_type div {
+			color: #fff;
+			padding: 6px 4px;
+			background-color: red;
+			margin-top: 10px;
+		}
+        button, input, optgroup, select, textarea {
+            color: inherit;
+            font: inherit;
+            margin: 0;
+            border: none;
+        }
+        button {
+            overflow: visible;
+        }
+        button, select {
+            text-transform: none;
+        }
+        button, html input[type=button], input[type=reset], input[type=submit] {
+            -webkit-appearance: button;
+            cursor: pointer;
+        }
+        .pure-button {
+            display: inline-block;
+            zoom: 1;
+            line-height: normal;
+            white-space: nowrap;
+            vertical-align: middle;
+            text-align: center;
+            cursor: pointer;
+            -webkit-user-drag: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .pure-button {
+            font-family: inherit;
+            font-size: 100%;
+            padding: .5em 1em;
+            color: #444;
+            color: rgba(0,0,0,.8);
+            border: 0 rgba(0,0,0,0);
+            background-color: #E6E6E6;
+            text-decoration: none;
+            border-radius: 2px;
+        }
+        .pure-button:focus {
+            outline: 0
+        }
+        .pure-button-hover, .pure-button:hover, .pure-button:focus {
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#1a000000', GradientType=0);
+            background-image: -webkit-gradient(linear,0 0,0 100%,from(transparent),color-stop(40%,rgba(0,0,0,.05)),to(rgba(0,0,0,.1)));
+            background-image: -webkit-linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
+            background-image: -moz-linear-gradient(top,rgba(0,0,0,.05) 0,rgba(0,0,0,.1));
+            background-image: -o-linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
+            background-image: linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
+        }
+
+        .button-success, .button-error, .button-warning, .button-secondary {
+            color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px #00000033;
+        }
+        .button-success {
+            background: rgb(28, 184, 65);
+        }
+        .button-error {
+			/* background: rgb(202, 60, 60); */
+			background-color: #800409;
+        }
+        .button-warning {
+            background: rgb(223, 117, 20);
+        }
+        .button-secondary {
+			/* background: rgb(66, 184, 221); */
+			background-color: #f0d774;
+			color: #ca3c3c;
+        }
+        .tools {
+			/* position: absolute;
+			z-index: 999;
+            bottom: 20px;
+            right: 20px;
+            text-align: center; */
+        }
+        .tools .pure-button {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 0;
+            text-align: center;
+            width:50px;
+		}
+		.prize_opeation {
+			position: absolute;
+			z-index: 999;
+            bottom: 20px;
+            right: 20px;
+            text-align: center;
+		}
+        .mask {
+            -webkit-filter:blur(5px);
+        }
+        #main {
+            -webkit-transition: all 1s;
+            transition: all 1s;
+        }
+    </style>
+</head>
+<body>
+<div id="main" class="wall"></div>
+<div id="result" class="result">
+    <div id="result_type" class="result_type"></div>
+    <div id="result_name" class="result_name"></div>
+</div>
+<div id="tools" class="tools">
+	<div class="prize_tips">
+		<button
+		v-on="click: onClick($value)"
+		class="prize_tips_button"
+		v-repeat="prizeTypeList">{{prizeTypeTitleMap[$value]}}</button>
+		<input type="text" class="prize_tips_input" v-model="inputPrize" placeholder="点击输入抽奖人数">
+	</div>
+	<div class="selected_type">
+		<span class="selected_type_header">已抽奖项</span>
+		<div v-repeat="selectedType">{{prizeTypeTitleMap[$value]}}</div>
+	</div>
+    <div class="prize_opeation">
+		<button
+			class="pure-button"
+			v-on="click: toggle"
+			v-class="
+					button-secondary: !running,
+					button-success: running
+				">{{running?'停!':'开始'}}</button>
+		<button class="pure-button button-error" v-on="click: reback">返回</button>
+		<button class="pure-button button-error" v-on="click: reset" v-if="isShowResetBtn">重置</button>
+	</div>
+	<audio id="bgm" class="hide" loop src="./music/Music.mp3"></audio>
+</div>
+<script type="text/javascript" src="js/zepto.js"></script>
+<script type="text/javascript" src="js/vue.js"></script>
+<script type="text/javascript" src="js/tagcanvas.js"></script>
+<script type="text/javascript" src="js/member.js"></script>
+<script type="text/javascript">
+    (function(){
+        var choosed = JSON.parse(localStorage.getItem('choosed')) || {};
+		var currentPrizeResult = JSON.parse(localStorage.getItem('prizeResult')) || {}
+		var currentSelectedType = JSON.parse(localStorage.getItem('selectedType')) || []
+		console.log(currentPrizeResult)
+		console.log(currentSelectedType)
+        var speed = function(){
+            return [0.1 * Math.random() + 0.01, -(0.1 * Math.random() + 0.01)];
+        };
+        var getKey = function(item){
+            return item.no;
+        };
+        var createHTML = function(){
+            var html = [ '<ul>' ];
+            member.forEach(function(item, index){
+                item.index = index;
+                var key = getKey(item);
+                var color = choosed[key] ? 'yellow' : 'white';
+                html.push('<li><a href="#" style="color: ' + color + ';">' + item.name + '</a></li>');
+            });
+            html.push('</ul>');
+            return html.join('');
+        };
+        var lottery = function(count){
+            var list = canvas.getElementsByTagName('a');
+            var color = 'yellow';
+            var ret = member
+                .filter(function(m, index){
+                    m.index = index;
+                    return !choosed[getKey(m)];
+                })
+                .map(function(m){
+                    return Object.assign({
+                      score: Math.random()
+                    }, m);
+                })
+                .sort(function(a, b){
+                    return a.score - b.score;
+                })
+                .slice(0, count)
+                .map(function(m){
+                  choosed[getKey(m)] = 1;
+                  list[m.index].style.color = color;
+                  return m.name + '<br/>' + m.no;
+                });
+            localStorage.setItem('choosed', JSON.stringify(choosed));
+            return ret;
+		};
+		var bgm=document.getElementById("bgm");
+		bgm.volume=1.0;
+		bgm.currentTime = 0;
+        var canvas = document.createElement('canvas');
+        canvas.id = 'myCanvas';
+        canvas.width = document.body.offsetWidth;
+        canvas.height = document.body.offsetHeight;
+        document.getElementById('main').appendChild(canvas);
+        new Vue({
+            el: '#tools',
+            data: {
+				chossedType: '',
+				inputPrize: '',
+				prizeCount: 0,
+				running: false,
+				isShowResetBtn: true,
+                prizeTypeList: [
+                    'firstFiveLevel', 'secondFiveLevel', 'fourLevel', 'threeLevel', 'twoLevel', 'oneLevel', 'zeroLevel'
+                ],
+                prizeTypeCountMap: {
+                    'firstFiveLevel': 30,
+                    'secondFiveLevel': 20,
+                    'fourLevel': 30,
+                    'threeLevel': 10,
+                    'twoLevel': 6,
+                    'oneLevel': 2,
+                    'zeroLevel': 1
+                },
+                prizeTypeTitleMap: {
+                    'firstFiveLevel': '五等奖(30/50)',
+                    'secondFiveLevel': '五等奖(20/50)',
+                    'fourLevel': '四等奖(30/30)',
+                    'threeLevel': '三等奖(10/10)',
+                    'twoLevel': '二等奖(6/6)',
+                    'oneLevel': '一等奖(2/2)',
+                    'zeroLevel': '特等奖(1/1)'
+                },
+				prizeResult: {},
+				selectedType: []
+            },
+            ready: function(){
+				this.prizeResult = currentPrizeResult ? currentPrizeResult : this.prizeResult
+				this.selectedType = currentSelectedType.length > 0 ? currentSelectedType : this.selectedType
+                canvas.innerHTML = createHTML();
+                TagCanvas.Start('myCanvas', '', {
+                    textColour: null,
+                    initial: speed(),
+                    dragControl: 1,
+                    textHeight: 14
+                });
+			},
+			watch: {
+				inputPrize: function(value) {
+					this.prizeCount = +value
+				}
+			},
+            methods: {
+				onClick: function (prizeType) {
+					this.chossedType = prizeType
+					this.prizeCount = 0
+					this.inputPrize = ''
+				},
+                reback: function() {
+                    $('#result').css('display', 'none');
+                    $('#main').removeClass('mask');
+                },
+                reset: function(){
+					$('#result').css('display', 'none');
+					$('#main').removeClass('mask');
+					if (this.chossedType !== '' && this.selectedType.indexOf(this.chossedType) > -1) {
+						if (confirm('确定要重置'+ this.prizeTypeTitleMap[this.chossedType] + '么？')) {
+							var index = this.selectedType.indexOf(this.chossedType)
+							var tempTypeResult = this.prizeResult[this.chossedType]
+							this.selectedType.splice(index, 1)
+							for (var i = 0;i < tempTypeResult.length; i++) {
+								var key = +tempTypeResult[i].substr(-7)
+								choosed[key] = 0
+							}
+							delete this.prizeResult[this.chossedType]
+							localStorage.setItem('choosed', JSON.stringify(choosed));
+							localStorage.setItem('selectedType', JSON.stringify(this.selectedType))
+							localStorage.setItem('prizeResult', JSON.stringify(this.prizeResult))
+							location.reload(true);
+						}
+					} else if(this.chossedType !== '' && this.selectedType.indexOf(this.chossedType) < 0) {
+						confirm('该奖项还没有抽！')
+					} else if(this.chossedType === '') {
+						if(confirm('请先选择重置的具体奖项！若继续重置则所有之前的抽奖历史将被清除！')){
+                        	localStorage.clear();
+                        	location.reload(true);
+                    	}
+					}
+					this.chossedType = ''
+                },
+                toggle: function(){
+                    if(this.running){
+						TagCanvas.SetSpeed('myCanvas', speed());
+						var prizeTitle = ''
+						var ret = ''
+						if (this.prizeCount > 0) {
+							ret = lottery(this.prizeCount);
+							this.prizeResult[new Date().toString()] = ret
+						} else {
+							this.prizeCount = this.prizeTypeCountMap[this.chossedType]
+							prizeTitle = this.prizeTypeTitleMap[this.chossedType]
+							console.log(prizeTitle)
+                        	ret = lottery(this.prizeCount);
+							this.prizeResult[this.chossedType] = ret
+							this.selectedType.push(this.chossedType)
+						}
+                        $('#result').css('display', 'block')
+                        $('#result_type').html(prizeTitle)
+                        $('#result_name').html('<span>' + ret.join('</span><span>') + '</span>');
+						TagCanvas.Reload('myCanvas');
+						this.pause()
+                        localStorage.setItem(new Date().toString(), JSON.stringify(ret));
+						localStorage.setItem('prizeResult', JSON.stringify(this.prizeResult))
+						localStorage.setItem('selectedType', JSON.stringify(this.selectedType))
+						$('#main').addClass('mask');
+						this.chossedType = ''
+						this.prizeCount = 0
+						this.inputPrize = ''
+                    } else {
+                        $('#result').css('display', 'none');
+                        $('#main').removeClass('mask');
+                        if (this.chossedType !== '' && this.selectedType.indexOf(this.chossedType) < 0 || this.prizeCount > 0) {
+							this.play();
+                            TagCanvas.SetSpeed('myCanvas', [5, 1]);
+                        } else if(this.chossedType !== '' && this.selectedType.indexOf(this.chossedType) > -1) {
+							confirm('该奖项已经抽过啦，若要重新抽请先重置当前奖项。')
+							this.chossedType = ''
+							return
+						} else {
+                            confirm('请先选择要抽的奖项！')
+                            return
+                        }
+                    }
+					this.running = !this.running;
+					this.isShowResetBtn = !this.isShowResetBtn
+				},
+				play: function() {
+					bgm.play();
+				},
+				pause: function() {
+					bgm.pause()
+				}
+            }
+        });
+	})();
+</script>
+</body onunload="goodbye()">
+</html>
